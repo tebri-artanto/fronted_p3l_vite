@@ -38,7 +38,7 @@ import RoomBooking from './components/reservasi/RoomBooking';
 import dotenv from 'dotenv'
 import ResumePage from './components/reservasi/ResumePage';
 import RoomBookingGroup from './components/reservasi/Room BookingGroup';
-import PaymentPage from './components/reservasi/paymentPage';
+import PaymentPage from './components/reservasi/PaymentPage';
 import AddReservasiGroup from './components/reservasi/AddReservasiGroup';
 import RiwayatTransaksiCust from './components/customer/riwayatTransaksiCust';
 import HomeFO from './components/frontOffice/homeFO';
