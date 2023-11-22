@@ -1,0 +1,180 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import SidebarTest from "../SidebarTest";
+import useSWR, { useSWRConfig } from "swr";
+
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+import {
+    Box,
+    Button,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Heading,
+    Input,
+    Stack,
+    Select,
+} from "@chakra-ui/react";
+
+
+const AddTarif = () => {
+    // const [jenis_tarif, setNama] = useState("");
+    // const [besaran_tarif, setHarga] = useState("");
+    const [SelectedValue, setSelectedValue] = useState("");
+    //const [id_season, setStock] = useState("");
+    const navigate = useNavigate();
+    const { mutate } = useSWRConfig();
+    const [seasonList, setSeasonList] = useState([{ 'id': '', 'nama_season': '', 'tanggal_mulai': '', 'tanggal_selesai': '' }]);
+
+
+    useEffect(() => {
+        const fetcher = async () => {
+            const response = await fetch("http://localhost:8000/seasons");
+            const data = await response.json();
+            setSeasonList(data.data);
+
+        };
+        fetcher();
+    }, []);
+
+    const saveProduct = async (values) => {
+        try {
+            console.log(SelectedValue);
+            console.log(values);
+            await axios.post("http://localhost:8000/tarifs", values);
+
+            navigate("/tarif");
+        } catch (error) {
+            // Handle error as needed
+            console.error(error);
+        }
+    };
+
+    const formik = useFormik({
+        initialValues: {
+            jenis_tarif: "",
+            besaran_tarif: "",
+            id_season: "",
+        },
+        onSubmit: saveProduct,
+        validationSchema: yup.object().shape({
+            jenis_tarif: yup.string().required("Required"),
+            besaran_tarif: yup.number().positive().integer().required("Required"),
+            id_season: yup.number().required("Required"),
+        }),
+    });
+
+    const handleForm = (event) => {
+        const { target } = event;
+        formik.setFieldValue(target.name, target.value);
+    };
+
+
+    // const { data } = useSWR("season", fetcher);
+
+
+    
+
+
+    return (
+        <div className="App flex justify-between">
+            <SidebarTest />
+            <div className="relative w-full mx-20 my-20 bg-white p-8 rounded-xl shadow shadow-slate-300">
+                {/* <h1 className="text-center font-extrabold ">Tambah Tarif</h1>
+                <form onSubmit={saveProduct} className="my-10">
+                    <div className="flex flex-col">
+                        <div className="mb-5">
+                            <label className="font-bold text-slate-700">Jenis Tarif</label>
+                            <input
+                                type="text"
+                                className="w-full py-3 mt-1 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                                placeholder="Jenis Tarif"
+                                value={jenis_tarif}
+                                onChange={(e) => setNama(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <label className="font-bold text-slate-700">Besaran Tarif</label>
+                            <input
+                                type="number"
+                                placeholder="Besaran Tarif"
+                                className="w-full py-3 mt-1 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                                value={besaran_tarif}
+                                onChange={(e) => setHarga(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <label className="font-bold text-slate-700">Season</label>
+                            <select className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
+                                value={SelectedValue}
+                                onChange={(e) => setSelectedValue(e.target.value)}>
+                                <option value="">Select Season</option>
+                                {seasonList.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.nama_season}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full py-3 font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg border-indigo-500 hover:shadow"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form> */}
+                <Button className="bg-slate-600 colour" colorScheme="blackAlpha" onClick={() => navigate("/fasilitas")}>Back</Button>
+                <Heading mb="4">Tambah Tarif</Heading>
+                <Box padding="4" border="1px solid lightgray" borderRadius="4px" mt="8">
+                    <form onSubmit={formik.handleSubmit}>
+                        <Stack spacing="3">
+                            <FormControl isInvalid={formik.errors.jenis_tarif}>
+                                <FormLabel>Jenis Tarif</FormLabel>
+                                <Input
+                                    onChange={handleForm}
+                                    type="text"
+                                    name="jenis_tarif"
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.jenis_tarif} />
+                                <FormErrorMessage>{formik.errors.jenis_tarif}</FormErrorMessage>
+                            </FormControl>
+                            <FormControl isInvalid={formik.errors.besaran_tarif}>
+                                <FormLabel>Besaran Tarif</FormLabel>
+                                <Input
+                                    onChange={handleForm}
+                                    type="number"
+                                    name="besaran_tarif"
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.besaran_tarif} />
+                                <FormErrorMessage>{formik.errors.besaran_tarif}</FormErrorMessage>
+                            </FormControl>
+                            <FormControl isInvalid={formik.errors.id_season}>
+                                <FormLabel>Season</FormLabel>
+                                <Select placeholder='Select Season' value={formik.values.SelectedValue}
+                                    onChange={(e) => setSelectedValue(e.target.value)}>
+                                    {seasonList.map((option) => (
+                                        <option key={option.id} value={option.id}>
+                                            {option.nama_season}
+                                        </option>
+                                    ))}
+                                </Select>
+
+                                <FormErrorMessage>{formik.errors.id_season}</FormErrorMessage>
+                            </FormControl>
+                            <Button type="submit" colorScheme="teal">
+                                Tambah Tarif
+                            </Button>
+                        </Stack>
+                    </form>
+                </Box>
+            </div>
+        </div>
+    );
+};
+
+export default AddTarif;
