@@ -16,6 +16,12 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
+  Tabs,
+  Tab,
+  Card,
+  CardBody,
+  CardHeader,
+  Switch,
 } from "@nextui-org/react";
 import {
   Box,
@@ -59,8 +65,12 @@ const HomeFO = () => {
   const [transaksiFasilitas, setTransaksiFasilitas] = useState([]);
   const [reservationId, setReservationId] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [isCheckoutForm, setIsCheckoutForm] = useState(false);  
+  const [isCheckoutForm, setIsCheckoutForm] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
+  const handleToggle = () => {
+    setIsChecked((prevState) => !prevState);
+  };
   const openConfirmationModal = () => {
     setIsConfirmationModalOpen(true);
   };
@@ -76,7 +86,7 @@ const HomeFO = () => {
     };
     fetcher();
   }, []);
-  
+
   useEffect(() => {
     const fetcher = async () => {
       const response = await axios.get(
@@ -100,7 +110,7 @@ const HomeFO = () => {
     .filter(([_, jumlah]) => jumlah !== 0)
     .map(([_, jumlah]) => jumlah);
   console.log("quantitiesArray", quantitiesArray);
-  
+
   const fasilitasIdsArray = Object.keys(quantity)
     .filter((fasilitasId) => quantity[fasilitasId] > 0)
     .map((fasilitasId) => parseInt(fasilitasId, 10));
@@ -119,7 +129,20 @@ const HomeFO = () => {
       riwayatReservasi.tanggal_pembayaran.toString().includes(searchTermLower)
     );
   });
+  const filteredData4 = filteredData.filter((riwayatReservasi) => {
+    return riwayatReservasi.status_reservasi === "Sudah Checkout";
+  });
 
+  const filteredData3 = filteredData.filter((riwayatReservasi) => {
+    return riwayatReservasi.status_reservasi === "Sudah Checkin";
+  });
+
+  const filteredData2 = filteredData.filter((riwayatReservasi) => {
+    const today = new Date();
+    const isToday = new Date(riwayatReservasi.tanggal_checkin).toDateString() === today.toDateString();
+    return riwayatReservasi.status_reservasi === "Lunas" && isToday;
+  
+  });
 
   function formatDateToDateString(dateString) {
     const date = new Date(dateString);
@@ -170,20 +193,15 @@ const HomeFO = () => {
   const handleCheckInSuccess = () => {
     checkinReservasi(selectedReservation);
     closeModal();
-    
+
     setIsCheckInSuccess(true);
   };
-
- 
-
-  
 
   // FILEPATH: /d:/Kuliah/Semester 7/P3L/Coding/Frontend/fronted_p3l_vite/src/components/frontOffice/homeFO.jsx
 
   const handleCheckOut = (id) => {
     navigate(`/checkOutPage/${id}`);
   };
-
 
   const handleTambahFasilitas = (reservasi) => {
     console.log(reservasi);
@@ -192,7 +210,7 @@ const HomeFO = () => {
     console.log(reservasi.id);
     console.log(reservationId);
     getTransaksiFasilitasById(reservasi.id);
-    
+
     console.log("selectedReservasi:", selectedReservation);
     setIsTambahFasilitas(true);
   };
@@ -208,7 +226,7 @@ const HomeFO = () => {
   const handleSaveTambahFasilitas = () => {
     openConfirmationModal();
     setSelectedReservation(null);
-    setIsConfirmationModalOpen(false)
+    setIsConfirmationModalOpen(false);
   };
 
   const saveTambahFasilitas = async () => {
@@ -236,6 +254,29 @@ const HomeFO = () => {
     }
   };
 
+  let tabs = [
+    {
+      id: "1",
+      label: "Semua Reservasi",
+      content: filteredData
+    },
+    {
+      id: "2",
+      label: "Checkin",
+      content: filteredData2
+    },
+    {
+      id: "3",
+      label: "Checkout",
+      content: filteredData3
+    },
+    {
+      id: "4",
+      label: "Transaksi Selesai",
+      content: filteredData4
+    },
+  ];
+
   return (
     <div className="App flex justify-between">
       <SidebarTest />
@@ -246,6 +287,12 @@ const HomeFO = () => {
             Riwayat Transaksi
           </h1>
 
+          {/* <div className="flex w-full flex-col"> */}
+      <Tabs aria-label="Dynamic tabs" items={tabs}>
+        {(item) => (
+          <Tab key={item.id} title={item.label}>  
+          
+
           <input
             type="text"
             placeholder="Search"
@@ -254,44 +301,51 @@ const HomeFO = () => {
             className="border border-slate-200 rounded-md p-2 focus:ring focus:ring-blue-400"
           />
           <div className="relative shadow rounded-lg mt-3">
-            <NextTable responsive>
+            <NextTable
+              isHeaderSticky
+              responsive
+              classNames={{
+                wrapper: "max-h-[480px]",
+              }}
+            >
               <TableHeader>
-                <TableColumn>No</TableColumn>
-                <TableColumn>Booking ID</TableColumn>
-                <TableColumn>Customer</TableColumn>
-                <TableColumn>Tanggal Checkin</TableColumn>
-                <TableColumn>Tanggal Pembuatan</TableColumn>
-                <TableColumn>Status Reservasi</TableColumn>
-                <TableColumn>Tanggal Pembayaran</TableColumn>
-                <TableColumn>Action</TableColumn>
+                <TableColumn className="text-center">No</TableColumn>
+                <TableColumn className="text-center">Booking ID</TableColumn>
+                <TableColumn className="text-center">Customer</TableColumn>
+                <TableColumn className="text-center">
+                  Tanggal Checkin
+                </TableColumn>
+                <TableColumn className="text-center">
+                  Tanggal Pembuatan
+                </TableColumn>
+                <TableColumn className="text-center">
+                  Status Reservasi
+                </TableColumn>
+                <TableColumn className="text-center">
+                  Tanggal Pembayaran
+                </TableColumn>
+                <TableColumn className="text-center">Action</TableColumn>
               </TableHeader>
-              {/* <TableBody items={items}>
-                {(item) => (
-                  <TableRow key={item.id}>
-                    {(columnKey) => (
-                      <TableCell>
-                        {columnKey === "customer.nama"
-                          ? getKeyValue(item.customer, "nama")
-                          : getKeyValue(item, columnKey)}
-                      </TableCell>
-                    )}
-                  </TableRow>
-                )}
-              </TableBody> */}
-              <TableBody>
-                {filteredData.map((reservasi, index) => (
+              <TableBody className="text-center">
+                {item.content.map((reservasi, index) => (
                   <TableRow key={reservasi.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{reservasi.booking_id}</TableCell>
-                    <TableCell>{reservasi.customer.nama}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-center">{index + 1}</TableCell>
+                    <TableCell className="text-center">
+                      {reservasi.booking_id}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {reservasi.customer.nama}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {formatDateToDateString(reservasi.tanggal_checkin)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-center">
                       {formatDateToDateString(reservasi.create_date)}
                     </TableCell>
-                    <TableCell>{reservasi.status_reservasi}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-center">
+                      {reservasi.status_reservasi}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {formatDateToDateString(reservasi.tanggal_pembayaran)}
                     </TableCell>
                     <TableCell>
@@ -337,22 +391,23 @@ const HomeFO = () => {
                       >
                         Tambah Fasilitas
                       </button>
-                      {(reservasi.status_reservasi === "Sudah Checkout" && (
-                          <button
-                            onClick={() => navigateToNotaPelunasanPage(reservasi.id)}
-                            className={`font-medium px-3 py-1 rounded text-white ${
-                              reservasi.status_reservasi === "Sudah Checkout"
-                                ? "bg-blue-400 hover:bg-blue-500"
-                                : "bg-gray-400 cursor-not-allowed"
-                            }`}
-                            disabled={
-                              reservasi.status_reservasi !== "Sudah Checkout"
-                            }
-                          >
-                            Cetak Invoice
-                          </button>
-                        ))}
-                      
+                      {reservasi.status_reservasi === "Sudah Checkout" && (
+                        <button
+                          onClick={() =>
+                            navigateToNotaPelunasanPage(reservasi.id)
+                          }
+                          className={`font-medium px-3 py-1 rounded text-white ${
+                            reservasi.status_reservasi === "Sudah Checkout"
+                              ? "bg-blue-400 hover:bg-blue-500"
+                              : "bg-gray-400 cursor-not-allowed"
+                          }`}
+                          disabled={
+                            reservasi.status_reservasi !== "Sudah Checkout"
+                          }
+                        >
+                          Cetak Invoice
+                        </button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -441,7 +496,11 @@ const HomeFO = () => {
             </Dialog>
           </Transition>
           <Transition appear show={isCheckInSuccess} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => setIsCheckInSuccess(false)}>
+            <Dialog
+              as="div"
+              className="relative z-10"
+              onClose={() => setIsCheckInSuccess(false)}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -466,33 +525,33 @@ const HomeFO = () => {
                     leaveTo="opacity-0 scale-95"
                   >
                     <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
-                    >
-                      Check-In Success
-                    </Dialog.Title>
-                    <div className="mt-2">
-                      <p>The check-in is successful!</p>
-                      <p>Berhasil Deposit RP 300.000</p>
-                    </div>
-
-                    <div className="mt-4">
-                      <button
-                        type="button"
-                        className="ml-1 justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        onClick={() => setIsCheckInSuccess(false)}
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg font-medium leading-6 text-gray-900"
                       >
-                        Close
-                      </button>
-                    </div>
+                        Check-In Success
+                      </Dialog.Title>
+                      <div className="mt-2">
+                        <p>The check-in is successful!</p>
+                        <p>Berhasil Deposit RP 300.000</p>
+                      </div>
+
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          className="ml-1 justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          onClick={() => setIsCheckInSuccess(false)}
+                        >
+                          Close
+                        </button>
+                      </div>
                     </Dialog.Panel>
                   </Transition.Child>
                 </div>
               </div>
             </Dialog>
           </Transition>
-          
+
           <Transition appear show={isTambahFasilitas} as={Fragment}>
             <Dialog as="div" className="z-50" onClose={closeModal}>
               <Transition.Child
@@ -845,6 +904,9 @@ const HomeFO = () => {
               </div>
             </Dialog>
           </Transition>
+          </Tab>
+        )}
+      </Tabs>
         </div>
       </div>
     </div>

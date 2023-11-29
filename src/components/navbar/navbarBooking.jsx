@@ -15,30 +15,6 @@ import {
 } from '@chakra-ui/react'
 
 const AddReservasi = () => {
-  const [nama, setNama] = useState("");
-  const [no_telp, setNoTelp] = useState("");
-  const [tanggal_reservasi, setTanggalReservasi] = useState("");
-  const [waktu_reservasi, setWaktuReservasi] = useState("");
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post("API_ENDPOINT_URL", {
-        nama,
-        no_telp,
-        tanggal_reservasi,
-        waktu_reservasi,
-      });
-      console.log(response.data);
-      // reset form fields
-      setNama("");
-      setNoTelp("");
-      setTanggalReservasi("");
-      setWaktuReservasi("");
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const steps = [
     { title: 'First', description: 'Contact Info' },

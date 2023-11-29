@@ -23,9 +23,14 @@ import {
 } from '@chakra-ui/react'
 
 const Login = () => {
+  
   const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
   const errRef = useRef();
+  console.log(import.meta.env.VITE_API_HOSTING);
+  const API_URL = import.meta.env.VITE_API_HOSTING;
+  console.log(API_URL);
+  
 
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
@@ -64,7 +69,9 @@ const Login = () => {
   };
   const handleSubmit = async (values) => {
     try {
-      const response = await axios.post('http://localhost:8000/auth/login', values);
+
+
+      const response = await axios.post(`${API_URL}/auth/login`, values);
       const token = response.data.data.token;
       console.log(token);
 
@@ -72,7 +79,7 @@ const Login = () => {
       Cookies.set('authToken', token);
       saveTokenToLocalStorage(response.data.token);
       window.alert('Login Succesfull')
-      const test = await axios.get('http://localhost:8000/auth/profile', {
+      const test = await axios.get(`${API_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,6 +94,8 @@ const Login = () => {
         navigate('/kamar');
       } else if (test.data.data.id_role === 5) {
         navigate('/homeFO');
+      } else if (test.data.data.id_role === 6 || test.data.data.id_role === 7) {
+        navigate('/homeLaporan');
       }
 
 

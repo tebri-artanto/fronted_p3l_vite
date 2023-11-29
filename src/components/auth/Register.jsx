@@ -21,8 +21,7 @@ import {
 } from '@chakra-ui/react'
 
 function Register () {
-
- 
+  const API_URL = import.meta.env.VITE_API_HOSTING;
  
   const navigate = useNavigate()
   const [show, setShow] = React.useState(false)
@@ -36,7 +35,7 @@ function Register () {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await axios.post('http://localhost:8000/customers', values);
+      const response = await axios.post(`${API_URL}/customers`, values);
       console.log(values)
       console.log('Registration successful:', response.data)
       window.alert('Registration Succesfull')
@@ -74,48 +73,7 @@ function Register () {
   }
   return (
     <div className='max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300'>
-      {/* <form className='flex max-w-md flex-col gap-4' onSubmit={handleSubmit}>
-        <div>
-          <div className='mb-2 block'>
-            <Label htmlFor='username2' value='Your username' />
-          </div>
-          <TextInput
-            id='username2'
-            name='username'
-            placeholder='Username'
-            shadow
-            type='text'
-            value={formData.username}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <div className='mb-2 block'>
-            <Label htmlFor='password2' value='Your password' />
-          </div>
-          <div className='relative'>
-            <TextInput
-              id='password2'
-              name='password'
-              required
-              shadow
-              type={showPassword ? 'text' : 'password'} // Toggle between 'text' and 'password'
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <button
-              type='button'
-              onClick={togglePasswordVisibility}
-              className='absolute right-2 top-3 cursor-pointer'
-            >
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
-          </div>
-        </div>
-
-        <Button type='submit'>Register new account</Button>
-      </form> */}
-      {/* <Box padding='4' border='1px solid lightgray' borderRadius='4px' mt='8'> */}
+      
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing='3'>
           <Heading size='lg'>Register</Heading>

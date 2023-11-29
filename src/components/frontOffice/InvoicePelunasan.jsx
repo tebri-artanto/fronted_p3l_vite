@@ -10,31 +10,8 @@ import { useNavigate } from "react-router-dom";
 import ReactToPrint from "react-to-print";
 import PrintableInvoice from "./PrintableInvoice";
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  Box,
   Button,
-  Container,
-  Heading,
-  Text,
-  Image,
   Center,
-  Stack,
-  SimpleGrid,
-  Flex,
-  Divider,
-  List,
-  ListItem,
-  chakra,
-  HStack,
-  FormControl,
-  Select,
-  VStack,
 } from "@chakra-ui/react";
 
 import { ArrowBackIcon } from "@chakra-ui/icons";

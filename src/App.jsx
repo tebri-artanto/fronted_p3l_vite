@@ -44,6 +44,11 @@ import RiwayatTransaksiCust from './components/customer/riwayatTransaksiCust';
 import HomeFO from './components/frontOffice/homeFO';
 import InvoicePelunasan from './components/frontOffice/InvoicePelunasan';
 import CheckOutPage from './components/frontOffice/CheckOutPage';
+import HomeLaporan from './components/GM & Pemilik/HomeLaporan';
+import Laporan1 from './components/GM & Pemilik/Laporan1';
+import Laporan2 from './components/GM & Pemilik/Laporan2';
+import Laporan3 from './components/GM & Pemilik/Laporan3';
+import Laporan4 from './components/GM & Pemilik/Laporan4';
 
 
 const router = createBrowserRouter([
@@ -178,12 +183,33 @@ const router = createBrowserRouter([
   {
     path: "/checkOutPage/:id",
     element: <CheckOutPage/>,
+  },
+  {
+    path: "/homeLaporan",
+    element: <HomeLaporan/>,
+  },
+  {
+    path: "/laporan1",
+    element: <Laporan1/>,
+  },
+  {
+    path: "/laporan2",
+    element: <Laporan2/>,
+  },
+  {
+    path: "/laporan3",
+    element: <Laporan3/>,
+  },
+  {
+    path: "/laporan4",
+    element: <Laporan4/>,
   }
 ]);
 
 
 
 const App = () => {
+
   // dotenv.config()
   //const navigate = useNavigate();
 

@@ -30,18 +30,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ReactToPrint from "react-to-print";
 
-const PrintableInvoice = forwardRef(
-  (
-    {
-      invoices,
-      reservasi,
-      customer,
-      transaksiFasilitas,
-      transaksiKamars,
-      formatDateToDateString,
-    },
-    ref
-  ) => {
+const PrintableInvoice = forwardRef(({invoices, reservasi, customer,transaksiFasilitas,transaksiKamars, formatDateToDateString },ref) => {
     return (
       <Box ref={ref}>
         <Center>

@@ -12,6 +12,7 @@ import Cookies from 'js-cookie';
 
 
 const ShowProfile = () => {
+  const API_URL = import.meta.env.VITE_API_HOSTING;
   const [user, setUser] = useState([{ 'id': '', 'username': '', }]);
   const [customer, setCustomer] = useState([{ 'id': '', 'nama': '', 'alamat': '', 'no_telp': '', 'email': '', 'id_user': '' }]);
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const ShowProfile = () => {
   const fetchUserData = async (token) => {
     // Send the token with the request to authenticate
     try {
-      const response = await axios.get('http://localhost:8000/auth/profile', {
+      const response = await axios.get(`${API_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -48,7 +49,7 @@ const ShowProfile = () => {
 
   const fetchCustomerData = async (user) => {
     try {
-      const response = await axios.get(`http://localhost:8000/customers/akun/${user.id}`);
+      const response = await axios.get(`${API_URL}/customers/akun/${user.id}`);
       console.log(response);
 
       setCustomer(response.data.data);

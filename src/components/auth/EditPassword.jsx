@@ -23,6 +23,7 @@ import {
 } from '@chakra-ui/react'
 
 const EditPassword = () => {
+  const API_URL = import.meta.env.VITE_API_HOSTING;
   const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
   const errRef = useRef();
@@ -47,7 +48,7 @@ const EditPassword = () => {
 
   // const handleSubmit = async values => {
   //   try {
-  //     const response = await axios.post('http://localhost:8000/auth/login', values)
+  //     const response = await axios.post('${API_URL}/auth/login', values)
   //     console.log(values)
   //     if (!window.alert('EditPassword Succesfull')){
   //       navigate('/');
@@ -75,7 +76,7 @@ const EditPassword = () => {
   const fetchUserData = async (token) => {
     // Send the token with the request to authenticate
     try {
-      const response = await axios.get('http://localhost:8000/auth/profile', {
+      const response = await axios.get(`${API_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +91,7 @@ const EditPassword = () => {
   const updatePass = async (values) => {
     try {
         
-      const response = await axios.put(`http://localhost:8000/auth/${user.id}`, values);
+      const response = await axios.put(`${API_URL}/auth/${user.id}`, values);
       console.log(response);
 
       window.alert('EditPassword Succesfull')
