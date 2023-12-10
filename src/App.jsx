@@ -20,7 +20,7 @@ import AddTarif from './components/tarif/AddTarif'
 import EditTarif from './components/tarif/editTarif'
 import KamarList from './components/kamar/KamarList'
 import Register from './components/auth/Register'
-import EditFasilitas2 from './components/fasilitasTambahan/EditFasilitas2'
+
 import Login from './components/auth/Login'
 import AddKamar from './components/kamar/AddKamar'
 import EditKamar from './components/kamar/EditKamar';

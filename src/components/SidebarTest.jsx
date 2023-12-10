@@ -77,7 +77,7 @@ const SidebarTest = () => {
       <div
         className={`${
           open ? "w-72" : "w-20"
-        } bg-teal-color h-screen p-5 pt-8 relative duration-400`}
+        } bg-gradient-to-r from-blue-500 to-cyan-500 h-screen p-5 pt-8 relative duration-400`}
       >
         <img
           src="./src/assets/control.png"
@@ -89,6 +89,7 @@ const SidebarTest = () => {
         <div className="flex gap-x-4 items-center">
           <img
             src="https://storage.googleapis.com/image-storage-p3l/logo-kecik.png"
+            onClick={() => navigate("/")}
             className={`cursor-pointer duration-500 w-10 ${
               open 
             }`}

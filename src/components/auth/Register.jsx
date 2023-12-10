@@ -17,10 +17,35 @@ import {
   Input,
   InputRightElement,
   InputGroup,
-  Stack
+  Stack,
+  useToast
 } from '@chakra-ui/react'
 
 function Register () {
+  
+  const toast = useToast();
+  const SuccessToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "success",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const ErrorToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
   const API_URL = import.meta.env.VITE_API_HOSTING;
  
   const navigate = useNavigate()
@@ -38,9 +63,10 @@ function Register () {
       const response = await axios.post(`${API_URL}/customers`, values);
       console.log(values)
       console.log('Registration successful:', response.data)
-      window.alert('Registration Succesfull')
+      SuccessToast('Registration Succesfull', 'You have been registered')
       navigate('/login')
     } catch (error) {
+      ErrorToast('Registration failed', 'Please try again')
       console.error('Registration failed:', error)
     }
   }

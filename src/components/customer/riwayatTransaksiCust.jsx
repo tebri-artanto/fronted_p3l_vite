@@ -39,17 +39,12 @@ const RiwayatTransaksiCust = () => {
         );
     });
   function formatDateToDateString(dateString) {
-    // Create a Date object from the date string
     const date = new Date(dateString);
 
     if (dateString === "1970-01-01T00:00:00.000Z") {
       return "-";
     }
-
-    // Define options for formatting the date
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-
-    // Format the date in "DD-MM-YYYY" format
     return date.toLocaleDateString('en-GB', options);
   }
   

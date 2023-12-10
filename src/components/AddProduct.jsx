@@ -1,76 +1,159 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import DatePicker from "react-date-picker";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  InputRightElement,
+  InputGroup,
+  Stack,
+  Link,
+  useToast,
+} from "@chakra-ui/react";
 
 const AddProduct = () => {
-  const [namaSeason, setName] = useState("");
-  const [tanggalMulai, setTanggalMulai] = useState("");
-  const [tanggalSelesai, setTanggalSelesai] = useState("");
-  const navigate = useNavigate();
-
-  const saveProduct = async (e) => {
-    e.preventDefault();
-    console.log(namaSeason);
-    await axios.post("http://localhost:8000/seasons", {
-      nama_season: String(namaSeason),
-      tanggal_mulai: Date(tanggalMulai),
-      tanggal_selesai: Date(tanggalSelesai),
+  const toast = useToast();
+  const SuccessToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "success",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
     });
-    navigate("/season");
   };
+  const ErrorToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_HOSTING;
 
+  const saveProduct = async (values) => {
+    try {
+      const response = await axios.post(`${API_URL}/seasons`, {
+        nama_season: values.nama_season,
+        jenis_season: values.jenisSeason,
+        tanggal_mulai: values.tanggalMulai,
+        tanggal_selesai: values.tanggalSelesai,
+      });
+      console.log(response);
+      SuccessToast("Success", "Season saved successfully");
+      navigate("/season");
+    } catch (error) {
+      console.log(error);
+      ErrorToast("Error", "Failed to save season");
+    }
+  };
 
   const seasonList = [
     { title: "High Season" },
     { title: "Promo Season" },
-    { title: "Normal Season" }
+    { title: "Normal Season" },
   ];
+
+  const formik = useFormik({
+    initialValues: {
+      nama_season: "",
+      jenisSeason: "",
+      tanggalMulai: "",
+      tanggalSelesai: "",
+    },
+    validationSchema: yup.object().shape({
+      nama_season: yup.string().required("Please enter the season name"),
+      jenisSeason: yup.string().required("Please select the season type"),
+      tanggalMulai: yup.string().required("Please enter the start date"),
+      tanggalSelesai: yup.string().required("Please enter the end date"),
+    }),
+    onSubmit: saveProduct,
+  });
 
   return (
     <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
-      <form onSubmit={saveProduct} >
-        <div className="flex flex-col">
-          <div className="mb-5">
-            <label className="font-bold text-slate-700">Nama Season</label>
-            <select className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
-              value={namaSeason}
-              onChange={(e) => setName(e.target.value)}>
+      <form onSubmit={formik.handleSubmit}>
+        <Stack spacing={4}>
+          <FormControl
+            id="nama_season"
+            isInvalid={formik.errors.nama_season && formik.touched.nama_season}
+          >
+            <FormLabel>Nama Season</FormLabel>
+            <Input
+              type="text"
+              {...formik.getFieldProps("nama_season")}
+              placeholder="Enter season name"
+            />
+            <FormErrorMessage>{formik.errors.nama_season}</FormErrorMessage>
+          </FormControl>
+
+          <FormControl
+            id="jenisSeason"
+            isInvalid={formik.errors.jenisSeason && formik.touched.jenisSeason}
+          >
+            <FormLabel>Jenis Season</FormLabel>
+            <Input
+              as="select"
+              {...formik.getFieldProps("jenisSeason")}
+              placeholder="Select season type"
+            >
               <option value="">Select Season</option>
               {seasonList.map((option) => (
-                <option key={option.id} value={option.title}>
+                <option key={option.title} value={option.title}>
                   {option.title}
                 </option>
               ))}
-            </select>
+            </Input>
+            <FormErrorMessage>{formik.errors.jenisSeason}</FormErrorMessage>
+          </FormControl>
 
-          </div>
-          <div className="mb-5">
-            <label className="font-bold text-slate-700">Tanggal Mulai</label>
-            <input
+          <FormControl
+            id="tanggalMulai"
+            isInvalid={formik.errors.tanggalMulai && formik.touched.tanggalMulai}
+          >
+            <FormLabel>Tanggal Mulai</FormLabel>
+            <Input
               type="date"
-              className="w-full py-3 mt-1 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-              value={tanggalMulai}
-              onChange={(e) => setTanggalMulai(e.target.value)}
+              {...formik.getFieldProps("tanggalMulai")}
+              placeholder="Select start date"
             />
-          </div>
-          <div className="mb-5">
-            <label className="font-bold text-slate-700">Tanggal Selesai</label>
+            <FormErrorMessage>{formik.errors.tanggalMulai}</FormErrorMessage>
+          </FormControl>
 
-            <input
+          <FormControl
+            id="tanggalSelesai"
+            isInvalid={formik.errors.tanggalSelesai && formik.touched.tanggalSelesai}
+          >
+            <FormLabel>Tanggal Selesai</FormLabel>
+            <Input
               type="date"
-              className="w-full py-3 mt-1 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-              value={tanggalSelesai}
-              onChange={(e) => setTanggalSelesai(e.target.value)}
+              {...formik.getFieldProps("tanggalSelesai")}
+              placeholder="Select end date"
             />
-          </div>
-          <button
+            <FormErrorMessage>{formik.errors.tanggalSelesai}</FormErrorMessage>
+          </FormControl>
+
+          <Button
             type="submit"
-            className="w-full py-3 font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg border-indigo-500 hover:shadow"
+            colorScheme="blue"
+            isLoading={formik.isSubmitting}
           >
             Save
-          </button>
-        </div>
+          </Button>
+        </Stack>
       </form>
     </div>
   );

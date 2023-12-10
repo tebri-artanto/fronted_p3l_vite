@@ -4,9 +4,10 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
+import { useToast } from '@chakra-ui/react';
 
 const navigation = [
-  { name: 'Home', href: '/', current: true },
+  // { name: 'Home', href: '/', current: true },
   // { name: 'Team', href: '#', current: false },
   // { name: 'Projects', href: '#', current: false },
   // { name: 'Calendar', href: '#', current: false },
@@ -16,30 +17,61 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const handleLogout = () => {
-  if (window.confirm('Are you sure you want to logout?')) {
-    // Send a POST request to the logout API
-    Cookies.remove('authToken');
-    window.location.href = '/';
-    axios.post('http://localhost:8000/auth/logout').then(response => {
-        if (response.status === 200) {
-          // Logout was successful, remove the token and redirect
-          Cookies.remove('authToken');
-          localStorage.removeItem('authToken');
-          window.location.href = '/login'; // Replace with your login page URL
-        } else {
-          // Handle the API response in case of an error
-          console.error('Logout failed:', response.data);
-        }
-      })
-      .catch(error => {
-        // Handle any Axios request errors
-        console.error('Axios request failed:', error);
-      });
-  }
-}
+
+
 
 export default function Example() {
+
+  
+  const toast = useToast();
+  const SuccessToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "success",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const ErrorToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const handleLogout = () => {
+  
+    if (window.confirm('Are you sure you want to logout?')) {
+      // Send a POST request to the logout API
+      Cookies.remove('authToken');
+      window.location.href = '/';
+      axios.post('http://localhost:8000/auth/logout').then(response => {
+          if (response.status === 200) {
+            // Logout was successful, remove the token and redirect
+            Cookies.remove('authToken');
+            localStorage.removeItem('authToken');
+            SuccessToast('Logout Succesfull', 'You have been logged out')
+            window.location.href = '/login'; // Replace with your login page URL
+          } else {
+            // Handle the API response in case of an error
+            console.error('Logout failed:', response.data);
+          }
+        })
+        .catch(error => {
+          // Handle any Axios request errors
+          ErrorToast('Logout failed', 'Please try again')
+          console.error('Axios request failed:', error);
+        });
+    }
+  }
+
   const [user, setUser] = useState([{'id':'','username':'',}]);
     // const navigate = useNavigate();
   useEffect(() => {

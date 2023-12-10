@@ -15,20 +15,43 @@ import {
   Heading,
   Input,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 
 const AddProduct = () => {
-  // const [nama_fasilitas, setNama] = useState("");
-  // const [harga, setHarga] = useState("");
-  // const [stock, setStock] = useState("");
+  const toast = useToast();
+  const SuccessToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "success",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const ErrorToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_HOSTING;
 
   const saveProduct = async (values) => {
     try {
-      await axios.post("http://localhost:8000/fasilitasTambahans", values);
+      await axios.post(`${API_URL}/fasilitasTambahans`, values);
+      SuccessToast("Success", "Fasilitas saved successfully");
       navigate("/fasilitas");
     } catch (error) {
-      // Handle error as needed
+      ErrorToast("Error", "Failed to save fasilitas");
       console.error(error);
     }
   };

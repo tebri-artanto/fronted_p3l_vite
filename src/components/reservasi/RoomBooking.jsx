@@ -352,42 +352,6 @@ function HorizontalRoomCard({
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(checkUserLoginStatus());
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  // const [lama_nginap, setDays] = useState();
-  // const handleClick = () => {
-  //     if (isUserLoggedIn === true) {
-  //         try {
-  //             // Your logic here
-  //             console.log('Start Date:', startDate);
-  //             console.log('End Date:', endDate);
-
-  //             // Example: Redirect to the booking page with query parameters
-  //             navigate("/addReservasi", {
-  //                 state: {
-  //                     startDate,
-  //                     endDate,
-  //                 },
-  //             });
-  //         } catch (error) {
-  //             console.error('Error handling click:', error);
-  //         }
-  //     } else {
-
-  //         console.log("User is not logged in, redirect to login page");
-  //     }
-  // };
-  // const generatLamaNginep = async () => {
-  //     try {
-  //       const response = await axios.post("http://localhost:8000/perhitungans/calculateDays",{
-  //         tanggalCekin: startDate, tanggalCheckout: endDate,
-  //       });
-  //       console.log(response);
-  //       setDays(response.data.days);
-  //     } catch (error) {
-  //       // Handle error as needed
-  //       console.error(error);
-  //     }
-  //   };
-
   const handleClick = (selectedKamarId) => {
     if (isUserLoggedIn === true) {
       try {

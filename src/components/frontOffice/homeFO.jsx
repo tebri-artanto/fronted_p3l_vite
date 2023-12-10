@@ -14,41 +14,20 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination,
-  getKeyValue,
   Tabs,
   Tab,
-  Card,
-  CardBody,
-  CardHeader,
-  Switch,
 } from "@nextui-org/react";
 import {
   Box,
   Button,
-  Container,
   Heading,
   Text,
   Image,
   Center,
-  Stack,
   SimpleGrid,
   Flex,
   Divider,
-  List,
-  ListItem,
-  chakra,
-  HStack,
-  FormControl,
-  Select,
   VStack,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
 } from "@chakra-ui/react";
 const HomeFO = () => {
   const { mutate } = useSWRConfig();
@@ -224,9 +203,10 @@ const HomeFO = () => {
   };
 
   const handleSaveTambahFasilitas = () => {
+    setIsTambahFasilitas(false);
     openConfirmationModal();
     setSelectedReservation(null);
-    setIsConfirmationModalOpen(false);
+    
   };
 
   const saveTambahFasilitas = async () => {
@@ -240,6 +220,7 @@ const HomeFO = () => {
       }
     );
     console.log(response.data);
+    setIsConfirmationModalOpen(false);
   };
 
   const navigateToNotaPelunasanPage = async (reservasiId) => {
@@ -724,8 +705,8 @@ const HomeFO = () => {
                     enterTo="opacity-100 scale-100"
                     leave="ease-in duration-200"
                     leaveFrom="opacity-100 scale-100"
-                    leaveTo="opacity-0 scale-95"
-                  >
+                    leaveTo="opacity-0 scale-95">
+          
                     <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                       <Dialog.Title
                         as="h3"

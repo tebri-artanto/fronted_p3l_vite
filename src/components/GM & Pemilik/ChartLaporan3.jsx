@@ -11,18 +11,28 @@ import {
 import Chart from "react-apexcharts";
 import axios from "axios";
 
-const ChartLaporan3 = () => {
+const ChartLaporan3 = (bulan) => {
   const [laporan3, setLaporan3] = useState([]);
+  const [selectedBulan, setSelectedBulan] = useState('');
+  const [bulanValue, setBulanValue] = useState(0);
+
   useEffect(() => {
+    console.log(bulan);
+    setSelectedBulan(bulan);
+    console.log(selectedBulan.bulan);
+
+    setBulanValue(selectedBulan.bulan); 
+    console.log(bulanValue);
+    
     const getLaporan3 = async () => {
       const response = await axios.get(
-        "http://localhost:8000/laporans/laporan3"
+        `http://localhost:8000/laporans/laporan3/${bulanValue}`
       );
       setLaporan3(response.data);
       console.log(response.data);
     };
     getLaporan3();
-  }, []);
+  }, [bulanValue]);
 
   // Extracting data for the chart
   const chartData = {

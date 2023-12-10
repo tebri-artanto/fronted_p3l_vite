@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ReactToPrint from "react-to-print";
 
-const PrintableLaporan3 = forwardRef(({}, ref) => {
+const PrintableLaporan3 = forwardRef(({bulan}, ref) => {
   const [laporan3, setLaporan3] = useState([]);
   const [totalJumlah, setTotalJumlah] = useState(0);
   const [currentYear, setCurrentYear] = useState(0);
@@ -45,15 +45,16 @@ const PrintableLaporan3 = forwardRef(({}, ref) => {
 
   useEffect(() => {
     console.log(currentMonth);
+    console.log(bulan);
     const getInvociebyId = async () => {
       const response = await axios.get(
-        `http://localhost:8000/laporans/laporan3/${currentMonth}`
+        `http://localhost:8000/laporans/laporan3/${bulan}`
       );
       setLaporan3(response.data);
       console.log(response.data);
     };
     getInvociebyId();
-  }, [currentMonth]);
+  }, [bulan]);
 
   useEffect(() => {
     const calculateTotalJumlah = () => {
@@ -140,7 +141,7 @@ const PrintableLaporan3 = forwardRef(({}, ref) => {
           </Text>
           <Flex alignItems="center">
             <Text mr={2}>Bulan:</Text>
-            <Select border="none" value={currentMonth} onChange={(e) => setCurrentMonth(e.target.value)}>
+            <Select border="none" value={bulan} disabled>
               {months.map((month) => (
                 <option key={month.value} value={month.value}>
                   {month.label}

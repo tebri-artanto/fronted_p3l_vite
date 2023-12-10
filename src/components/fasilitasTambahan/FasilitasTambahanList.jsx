@@ -5,14 +5,42 @@ import useSWR, { useSWRConfig } from "swr";
 import SidebarTest from "../SidebarTest";
 import Navbar from "../Navbar";
 import { Dialog, Transition } from '@headlessui/react'
-
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 const FasilitasTambahanList = () => {
-  const { mutate } = useSWRConfig();
+  const toast = useToast();
+  const SuccessToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "success",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const ErrorToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_HOSTING;
+  const { mutate } = useSWRConfig();  
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFasilitasId, setSelectedFasilitasId] = useState(null); // Added state to store the selected fasilitas ID
+
   const fetcher = async () => {
-    const response = await axios.get("http://localhost:8000/fasilitasTambahans");
+    const response = await axios.get(`${API_URL}/fasilitasTambahans`);
     return response.data.data;
   };
 
@@ -29,17 +57,29 @@ const FasilitasTambahanList = () => {
   });
 
   const deleteProduct = async (fasilitasTambahanId) => {
-    openModal();
-    if (!window.confirm("Are you sure?")) return;
-    await axios.delete(`http://localhost:8000/fasilitasTambahans/${fasilitasTambahanId}`);
-    mutate("fasilitasTambahan");
+    openModal(fasilitasTambahanId); // Open the modal and pass the selected fasilitas ID
   };
+
+  const deleteFasilitas = async () => {
+    try {
+      await axios.delete(`${API_URL}/fasilitasTambahans/${selectedFasilitasId}`);
+      SuccessToast("Success", "Fasilitas deleted successfully");
+      closeModal();
+      mutate("fasilitasTambahan");
+    } catch (error) {
+      ErrorToast("Error", "Failed to delete fasilitas");
+      console.error(error);
+    }
+  };
+
   function closeModal() {
-    setIsOpen(false)
+    setIsOpen(false);
+    setSelectedFasilitasId(null); // Reset the selected fasilitas ID
   }
 
-  function openModal() {
-    setIsOpen(true)
+  function openModal(fasilitasTambahanId) {
+    setIsOpen(true);
+    setSelectedFasilitasId(fasilitasTambahanId); // Set the selected fasilitas ID
   }
 
   return (
@@ -56,12 +96,12 @@ const FasilitasTambahanList = () => {
             Add New
           </Link>
           <input
-              type="text"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-slate-200 rounded-md p-2 focus:ring focus:ring-blue-400"
-            />
+            type="text"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border border-slate-200 rounded-md p-2 focus:ring focus:ring-blue-400"
+          />
           <div className="relative shadow rounded-lg mt-3">
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -135,14 +175,15 @@ const FasilitasTambahanList = () => {
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
+                          {/* Additional information about the data */}
                         </p>
                       </div>
 
                       <div className="mt-4">
                         <button
                           type="button"
-                          className=" justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                          onClick={closeModal}
+                          className="justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          onClick={deleteFasilitas}
                         >
                           Hapus
                         </button>

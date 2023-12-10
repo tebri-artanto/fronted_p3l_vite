@@ -60,6 +60,7 @@
     "react-router-dom": "^6.17.0",
     "react-tailwindcss-datepicker": "^1.6.6",
     "react-to-print": "^2.14.15",
+    "sonner": "^1.2.4",
     "sort-by": "^1.2.0",
     "styled-components": "^6.1.0",
     "swr": "^2.2.4",

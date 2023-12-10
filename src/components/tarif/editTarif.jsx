@@ -1,18 +1,58 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  InputRightElement,
+  InputGroup,
+  Stack,
+  Link,
+  useToast,
+} from "@chakra-ui/react";
 
 const EditTarif = () => {
+  const toast = useToast();
+  const SuccessToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "success",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const ErrorToast = (title, description) => {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      position: "top",
+      variant: "subtle",
+      isClosable: true,
+    });
+  };
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_HOSTING;
   const [jenis_tarif, setJenis] = useState("");
   const [besaran_tarif, setBesaran] = useState("");
   const [SelectedValue, setSelectedValue] = useState("");
   const [seasonList, setSeasonList] = useState([{ 'id': '', 'nama_season': '', 'tanggal_mulai': '', 'tanggal_selesai': '' }]);
-  const navigate = useNavigate();
+ 
   const { id } = useParams();
 
   useEffect(() => {
     const getProductById = async () => {
-      const response = await axios.get(`http://localhost:8000/tarifs/${id}`);
+      const response = await axios.get(`${API_URL}/tarifs/${id}`);
       setJenis(response.data.data.jenis_tarif);
       setBesaran(response.data.data.besaran_tarif);
       setSelectedValue(response.data.data.id_season);
@@ -21,7 +61,7 @@ const EditTarif = () => {
   }, [id]);
   useEffect(() => {
     const fetcher = async () => {
-      const response = await fetch("http://localhost:8000/seasons");
+      const response = await fetch(`${API_URL}/seasons`);
       const data = await response.json();
       setSeasonList(data.data);
 
@@ -30,7 +70,7 @@ const EditTarif = () => {
   }, []);
   const updateProduct = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8000/tarifs/${id}`, {
+    await axios.put(`${API_URL}/tarifs/${id}`, {
       jenis_tarif: jenis_tarif,
       besaran_tarif: besaran_tarif,
       id_season: Number(SelectedValue),

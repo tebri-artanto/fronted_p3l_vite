@@ -18,48 +18,6 @@ const AddKamar = () => {
 
     //const [id_season, setStock] = useState("");
     const navigate = useNavigate();
-    const [seasonList, setSeasonList] = useState([{'id':'','nama_season':'', 'tanggal_mulai':'', 'tanggal_selesai':''}]);
-    const [tarifList, setTarifList] = useState([{'id':'','jenis_tarif':'', 'besaran_tarif':'', 'id_season':'', 'nama_season':'', 'tanggal_mulai':'', 'tanggal_selesai':''}]);
-
-    useEffect(() => {
-        const fetcher = async () => {
-            const response = await fetch("http://localhost:8000/seasons");
-            const data = await response.json();
-            setSeasonList(data.data);
-            
-        };
-        fetcher();
-    }, []);
-
-    useEffect(() => {
-        // const fetcher = async () => {
-        //     const response = await fetch("http://localhost:8000/tarifs");
-        //     const data = await response.json();
-        //     setTarifList(data.data);
-            
-        // };
-        const fetcher = async () => {
-            const tarifResponse = await axios.get("http://localhost:8000/tarifs");
-            const seasonResponse = await axios.get("http://localhost:8000/seasons");
-    
-            const tarifs = tarifResponse.data.data;
-            const seasons = seasonResponse.data.data;
-    
-            const joinedData = tarifs.map((tarif) => {
-                const season = seasons.find((season) => season.id === tarif.id_season);
-    
-                return {
-                    ...tarif,
-                    season,
-                };
-            });
-            setTarifList(joinedData);
-            console.log(joinedData);
-        };
-        
-    
-        fetcher();
-    }, []);
 
     
 
@@ -73,8 +31,7 @@ const AddKamar = () => {
             jenis_bed: jenis_bed,
             luas_kamar: luas_kamar,
             fasilitas: fasilitas,
-            status_ketersediaan: Boolean(status_ketersediaan),
-            id_tarif: Number(SelectedValue),    
+            status_ketersediaan: "Available",
         });
         
         navigate("/kamar");
@@ -191,31 +148,6 @@ const AddKamar = () => {
                                 value={fasilitas}
                                 onChange={(e) => setFasilitas(e.target.value)}
                             />
-                        </div>
-                        <div className="mb-5">
-                            <label className="font-bold text-slate-700">Status Ketersediaan</label>
-                            <input
-                                type="text"
-                                placeholder="Status Ketersediaan"
-                                className="w-full py-3 mt-1 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                                value={status_ketersediaan}
-                                onChange={(e) => setStatus(e.target.value)}
-                            />
-                            
-                        </div>
-                        
-                        <div className="mb-5">
-                            <label className="font-bold text-slate-700">Tarif</label>
-                            <select className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state"
-                                value={SelectedValue}
-                                onChange={(e) => setSelectedValue(e.target.value)}>
-                                <option value="">Select Tarif</option>
-                                {tarifList.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.jenis_tarif}  ({option.besaran_tarif})
-                                    </option>
-                                ))}
-                            </select>
                         </div>
                         
                         <button
